@@ -14,6 +14,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Lab10_MovieCounter {
@@ -29,36 +30,24 @@ public class Lab10_MovieCounter {
     }
 
     void q2() {
-        mList.stream()
-                .filter(movie -> movie.getVotes() > 1_900_000)
-                .forEach(movie -> System.out.println("Vote > 1_900_000 : " + movie.getVotes()));
+        mList.stream().filter(x-> x.getVotes() > 1_900_000).map(x -> x).forEach(movie -> System.out.println("Vote > 1_900_000 : " + movie.getVotes()));
     }
 
     void q3() {
-        CSMovie maxMovie = mList.stream()
-                .max(Comparator.comparing(CSMovie::getGross))
-                .orElse(null);
-        if (maxMovie != null) {
-            System.out.println("MaxGross : " + maxMovie.getGross());
-        }
+        Optional<CSMovie> arr = mList.stream().max(Comparator.comparing(CSMovie::getGross));
+            System.out.println("MaxGross : " + arr);
+        
     }
 
     void q4() {
-        List<String> genreList = mList.stream()
-                .map(CSMovie::getGenre)
-                .distinct()
-                .collect(Collectors.toList());
+        List <String> genreList = mList.stream().map(x->x.getGenre()).distinct().collect(Collectors.toList());
         System.out.println("getGenre : " + genreList);
     }
 
     void q5() {
-        List<String> result = mList.stream()
-                .sorted(Comparator.comparing(CSMovie::getRuntime))
-                .limit(5)
-                .map(e -> String.format("%-55s --> %s", e.getTitle(), e.getRuntime()))
-                .collect(Collectors.toList());
-        System.out.println("Top 5 movies with the shortest runtime : ");
-        result.forEach(System.out::println);
+        mList.stream().sorted(Comparator.comparing(CSMovie::getGenre)).limit(5).map(e -> String.format("%-55s --> %s",e.getTitle(), e.getRuntime())).collect(Collectors.toList()).forEach(System.out::println);;
+        // System.out.println("Top 5 movies with the shortest runtime : ");
+        // result.forEach(System.out::println);
     }
 
     void q6() {
@@ -72,22 +61,14 @@ public class Lab10_MovieCounter {
     }
 
     void q7() {
-        List<String> genreList = mList.stream().sorted(Comparator.comparing(CSMovie::getScore).reversed())
-                .map(e -> e.getGenre()).limit(3).toList();
-        for (String i : genreList) {
-            System.out.println(i);
-        }
+       mList.stream().sorted(Comparator.comparing(CSMovie::getGenre).reversed()).limit(3).forEach(System.out::println);
     }
 
     void q8() {
-        List<CSMovie> topThree = mList.stream()
+         mList.stream()
                 .filter(movie -> "Action".equalsIgnoreCase(movie.getGenre()))
                 .sorted(Comparator.comparing(CSMovie::getScore).reversed().thenComparing(CSMovie::getTitle))
-                .limit(3)
-                .collect(Collectors.toList());
-        for (CSMovie m : topThree) {
-            System.out.println(m.getTitle());
-        }
+                .limit(3).forEach(System.out::println);
 
     }
 
